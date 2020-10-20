@@ -6,18 +6,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 /*
  * This is our model class and it corresponds to Customer table in database
  */
 @Entity
-@Table(name="CUSTOMER")
+@Table(name="customer")
 public class Customer{
 
     @Id
-    @Column(name="id")
-
-    int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @Column(name="customerName")
     String customerName;
@@ -45,10 +45,10 @@ public class Customer{
     public void setEmail(String email) {
         this.email = email;
     }
-    public int getId() {
+    public UUID getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

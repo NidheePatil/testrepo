@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Hibernate" />
         <module name="SecondAssignment-master" />
+        <module name="testrepo" />
       </profile>
     </annotationProcessing>
   </component>

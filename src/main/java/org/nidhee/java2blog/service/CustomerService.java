@@ -1,45 +1,44 @@
 package org.nidhee.java2blog.service;
 
-import java.util.List;
-
-import javax.transaction.Transactional;
-
-import org.nidhee.java2blog.dao.CustomerDao;
+import org.nidhee.java2blog.dao.CustomerRepository;
 import org.nidhee.java2blog.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-@Service("customerService")
+
+@Service
 public class CustomerService {
 
-    @Autowired
-    CustomerDao customerDao;
+	@Autowired
+	CustomerRepository customerRepository;
 
-    @Transactional
-    public List<Customer> getAllCustomers() {
-        return customerDao.getAllCustomers();
-    }
+	@Transactional
+	public List<Customer> getAllCustomers() {
+		return customerRepository.findAll();
+	}
 
-    @Transactional
-    public Customer getCustomer(int id) {
-        return customerDao.getCustomer(id);
-    }
+	@Transactional
+	public Customer getCustomer(UUID id) {
+		Optional<Customer> customer = customerRepository.findById(id);
+		return customer.orElse(null);
+	}
 
-    @Transactional
-    public void addCustomer(Customer customer) {
-        customerDao.addCustomer(customer);
-    }
+	@Transactional
+	public void addCustomer(Customer customer) {
+		customerRepository.save(customer);
+	}
 
-    @Transactional
-    public void updateCustomer(Customer customer) {
-        customerDao.updateCustomer(customer);
 
-    }
-
-    @Transactional
-    public void deleteCustomer(int id) {
-        customerDao.deleteCustomer(id);
-    }
+	@Transactional
+	public void deleteCustomer(UUID id) {
+		Optional<Customer> customer = customerRepository.findById(id);
+		customer.ifPresent(value -> customerRepository.delete(value));
+		return;
+	}
 }
 

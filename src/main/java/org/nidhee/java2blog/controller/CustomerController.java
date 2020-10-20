@@ -1,10 +1,13 @@
 package org.nidhee.java2blog.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.nidhee.java2blog.model.Customer;
 import org.nidhee.java2blog.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,53 +15,31 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class CustomerController {
 
-    @Autowired
-    CustomerService customerService;
+	@Autowired
+	CustomerService customerService;
 
-    @RequestMapping(value = "/getAllCustomers", method = RequestMethod.GET, headers = "Accept=application/json")
-    public String getAllCustomers(Model model) {
+	@RequestMapping(value = "/getAllCustomers", method = RequestMethod.GET, headers = "Accept=application/json")
+	public ResponseEntity<List<Customer>> getAllCustomers(Model model) {
 
-        List<Customer> listOfCustomers = customerService.getAllCustomers();
-        model.addAttribute("customer", new Customer());
-        model.addAttribute("listOfCustomers", listOfCustomers);
-        return "customerDetails";
-    }
+		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
+	}
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, headers = "Accept=application/json")
-    public String goToHomePage() {
-        return "redirect:/getAllCustomers";
-    }
+	@RequestMapping(value = "/getCustomer/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public ResponseEntity<Customer> getCustomerById(@PathVariable UUID id) {
 
-    @RequestMapping(value = "/getCustomer/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
-    public Customer getCustomerById(@PathVariable int id) {
-        return customerService.getCustomer(id);
-    }
+		return new ResponseEntity<>(customerService.getCustomer(id), HttpStatus.OK);
+	}
 
-    @RequestMapping(value = "/addCustomer", method = RequestMethod.POST, headers = "Accept=application/json")
-    public String addCustomer(@RequestBody Customer customer) {
-        if(customer.getId()==0)
-        {
-            customerService.addCustomer(customer);
-        }
-        else
-        {
-            customerService.updateCustomer(customer);
-        }
+	@RequestMapping(value = "/addCustomer", method = RequestMethod.POST, headers = "Accept=application/json")
+	public ResponseEntity<Object> addCustomer(@RequestBody Customer customer) {
 
-        return "redirect:/getAllCustomers";
-    }
+		customerService.addCustomer(customer);
+		return new ResponseEntity<>(null, HttpStatus.OK);
 
-    @RequestMapping(value = "/updateCustomer/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
-    public String updateCustomer(@PathVariable("id") int id,Model model) {
-        model.addAttribute("customer", this.customerService.getCustomer(id));
-        model.addAttribute("listOfCustomers", this.customerService.getAllCustomers());
-        return "customerDetails";
-    }
+	}
 
-    @RequestMapping(value = "/deleteCustomer/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
-    public String deleteCustomer(@PathVariable("id") int id) {
-        customerService.deleteCustomer(id);
-        return "redirect:/getAllCustomers";
-
-    }
+	@RequestMapping(value = "/deleteCustomer/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+	public void deleteCustomer(@PathVariable("id") UUID id) {
+		customerService.deleteCustomer(id);
+	}
 }
