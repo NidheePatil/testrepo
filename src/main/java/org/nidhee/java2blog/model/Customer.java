@@ -1,11 +1,8 @@
 package org.nidhee.java2blog.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /*
@@ -25,10 +22,23 @@ public class Customer{
     @Column(name="email")
     String email;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "foreignId", referencedColumnName = "id")
+    private List<Address> address= new ArrayList<>();
+
     public Customer() {
         super();
     }
-    public Customer(String customerName,String email) {
+
+    public List<Address> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<Address> address) {
+        this.address = address;
+    }
+
+    public Customer(String customerName, String email) {
         super();
         this.customerName=customerName;
         this.email=email;

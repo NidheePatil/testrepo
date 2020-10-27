@@ -40,5 +40,24 @@ public class CustomerService {
 		customer.ifPresent(value -> customerRepository.delete(value));
 		return;
 	}
+
+	@Transactional
+	public List<Customer> addManyCustomer(List<Customer> customerList){
+		 return customerRepository.saveAll(customerList);
+	}
+
+	@Transactional
+	public Customer updateCustomer(Customer customer){
+		Customer existingCustomer = customerRepository.findById(customer.getId()).orElse(null);
+		existingCustomer.setCustomerName(customer.getCustomerName());
+		existingCustomer.setEmail(customer.getEmail());
+		return customerRepository.save(existingCustomer);
+
+	}
+
+	@Transactional
+	public void deleteAllCustomer(){
+		customerRepository.deleteAll();
+	}
 }
 
